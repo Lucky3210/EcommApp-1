@@ -1,0 +1,4 @@
+The DataSeeder is similar to what we would do in the main method.
+The CommandLineRunner tool, is a tool that when implemented, it runs whenever the application is started
+We want to populate our database using this method and the @Component annotation tells spring to treat the class like
+component

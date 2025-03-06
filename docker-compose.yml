@@ -1,0 +1,54 @@
+version: '3'
+services:
+
+  # Run MySQL Image
+  mysqldb:
+    image: mysql:8
+    ports:
+      - 3306:3306
+#    environment:
+#      - MYSQL_ROOT_PASSWORD: lalala10
+#      - MYSQL_DATABASE: EcommApp
+#      - MYSQL_USER: source
+#      - MYSQL_PASSWORD: source
+    env_file:
+      - ./.env
+
+    volumes:
+      - ecomm:/var/lib/mysql
+
+
+  # Run PhpMyAdmin Image
+  phpmyadmin:
+    image: phpmyadmin:5.2
+    ports:
+      - 8081:80
+    environment:
+      - PMA_HOST=mysqldb 			# link to mysql service
+      - PMA_PORT=3306			# link to mysql port
+    depends_on:
+      - mysqldb				# ensures mysqldb starts first
+    restart: always
+
+
+  # Run our project Image
+  ecomm:
+    image: ecomm-demo:1.1.0
+    # build: . 		# The Dockerfile MUST be in the current directory if we want to build and run
+    ports:
+      - 8080:8080
+    depends_on:
+      - mysqldb
+#    environment:
+#      - SPRING_DATASOURCE_URL: ${SPRING_DATASOURCE_URL}
+#      - SPRING_DATASOURCE_USERNAME: ${SPRING_DATASOURCE_USERNAME}
+#      - SPRING_DATASOURCE_PASSWORD: ${SPRING_DATASOURCE_PASSWORD}
+      # In our application.properties file, we would add this as a variable
+    env_file:
+      - ./.env
+
+
+
+volumes:
+  ecomm:				# don't forget to rename this to the named volume
+    driver: local
